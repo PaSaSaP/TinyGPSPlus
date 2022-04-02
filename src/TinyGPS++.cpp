@@ -61,6 +61,7 @@ bool TinyGPSPlus::encode(char c)
   {
   case ',': // term terminators
     parity ^= (uint8_t)c;
+    [[fallthrough]];
   case '\r':
   case '\n':
   case '*':
@@ -189,6 +190,7 @@ bool TinyGPSPlus::endOfTermHandler()
         }
         satellites.commit();
         hdop.commit();
+        fix.commit();
         break;
       }
 
@@ -261,6 +263,7 @@ bool TinyGPSPlus::endOfTermHandler()
       break;
     case COMBINE(GPS_SENTENCE_GPGGA, 6): // Fix data (GPGGA)
       sentenceHasFix = term[0] > '0';
+      fix.newval = term[0] - '0';
       break;
     case COMBINE(GPS_SENTENCE_GPGGA, 7): // Satellites used (GPGGA)
       satellites.set(term);
