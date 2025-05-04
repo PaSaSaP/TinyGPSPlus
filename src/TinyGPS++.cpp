@@ -49,6 +49,19 @@ TinyGPSPlus::TinyGPSPlus()
   term[0] = '\0';
 }
 
+void TinyGPSPlus::reset()
+{
+  location.reset();
+  date.reset();
+  time.reset();
+  speed.reset();
+  course.reset();
+  altitude.reset();
+  satellites.reset();
+  hdop.reset();
+  fix.reset();
+}
+
 //
 // public methods
 //
@@ -337,6 +350,12 @@ const char *TinyGPSPlus::cardinal(double course)
   return directions[direction % 16];
 }
 
+void TinyGPSLocation::reset()
+{
+  valid = false;
+  updated = false;
+}
+
 void TinyGPSLocation::commit()
 {
    rawLatData = rawNewLatData;
@@ -369,11 +388,25 @@ double TinyGPSLocation::lng()
    return rawLngData.negative ? -ret : ret;
 }
 
+void TinyGPSDate::reset()
+{
+  valid = false;
+  updated = false;
+  date = 0;
+}
+
 void TinyGPSDate::commit()
 {
    date = newDate;
    lastCommitTime = millis();
    valid = updated = true;
+}
+
+void TinyGPSTime::reset()
+{
+  valid = false;
+  updated = false;
+  time = 0;
 }
 
 void TinyGPSTime::commit()
@@ -436,6 +469,13 @@ uint8_t TinyGPSTime::centisecond()
    return time % 100;
 }
 
+void TinyGPSDecimal::reset()
+{
+  valid = false;
+  updated = false;
+  val = 0;
+}
+
 void TinyGPSDecimal::commit()
 {
    val = newval;
@@ -446,6 +486,13 @@ void TinyGPSDecimal::commit()
 void TinyGPSDecimal::set(const char *term)
 {
    newval = TinyGPSPlus::parseDecimal(term);
+}
+
+void TinyGPSInteger::reset()
+{
+  valid = false;
+  updated = false;
+  val = 0;
 }
 
 void TinyGPSInteger::commit()

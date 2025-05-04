@@ -56,7 +56,7 @@ struct TinyGPSLocation
 public:
    bool isValid() const    { return valid; }
    bool isUpdated() const  { return updated; }
-   uint32_t age() const    { return valid ? millis() - lastCommitTime : (uint32_t)ULONG_MAX; }
+   uint32_t age(uint32_t currentTime = millis()) const { return valid ? currentTime - lastCommitTime : (uint32_t)ULONG_MAX; }
    const RawDegrees &rawLat()     { updated = false; return rawLatData; }
    const RawDegrees &rawLng()     { updated = false; return rawLngData; }
    double lat();
@@ -72,6 +72,7 @@ private:
    void commit();
    void setLatitude(const char *term);
    void setLongitude(const char *term);
+   void reset();
 };
 
 struct TinyGPSDate
@@ -80,7 +81,7 @@ struct TinyGPSDate
 public:
    bool isValid() const       { return valid; }
    bool isUpdated() const     { return updated; }
-   uint32_t age() const       { return valid ? millis() - lastCommitTime : (uint32_t)ULONG_MAX; }
+   uint32_t age(uint32_t currentTime = millis()) const { return valid ? currentTime - lastCommitTime : (uint32_t)ULONG_MAX; }
 
    uint32_t value()           { updated = false; return date; }
    uint16_t year();
@@ -96,6 +97,7 @@ private:
    uint32_t lastCommitTime;
    void commit();
    void setDate(const char *term);
+   void reset();
 };
 
 struct TinyGPSTime
@@ -104,7 +106,7 @@ struct TinyGPSTime
 public:
    bool isValid() const       { return valid; }
    bool isUpdated() const     { return updated; }
-   uint32_t age() const       { return valid ? millis() - lastCommitTime : (uint32_t)ULONG_MAX; }
+   uint32_t age(uint32_t currentTime = millis()) const { return valid ? currentTime - lastCommitTime : (uint32_t)ULONG_MAX; }
 
    uint32_t value()           { updated = false; return time; }
    uint8_t hour();
@@ -121,6 +123,7 @@ private:
    uint32_t lastCommitTime;
    void commit();
    void setTime(const char *term);
+   void reset();
 };
 
 struct TinyGPSDecimal
@@ -129,7 +132,7 @@ struct TinyGPSDecimal
 public:
    bool isValid() const    { return valid; }
    bool isUpdated() const  { return updated; }
-   uint32_t age() const    { return valid ? millis() - lastCommitTime : (uint32_t)ULONG_MAX; }
+   uint32_t age(uint32_t currentTime = millis()) const { return valid ? currentTime - lastCommitTime : (uint32_t)ULONG_MAX; }
    int32_t value()         { updated = false; return val; }
 
    TinyGPSDecimal() : valid(false), updated(false), val(0)
@@ -141,6 +144,7 @@ private:
    int32_t val, newval;
    void commit();
    void set(const char *term);
+   void reset();
 };
 
 struct TinyGPSInteger
@@ -149,7 +153,7 @@ struct TinyGPSInteger
 public:
    bool isValid() const    { return valid; }
    bool isUpdated() const  { return updated; }
-   uint32_t age() const    { return valid ? millis() - lastCommitTime : (uint32_t)ULONG_MAX; }
+   uint32_t age(uint32_t currentTime = millis()) const { return valid ? currentTime - lastCommitTime : (uint32_t)ULONG_MAX; }
    uint32_t value()        { updated = false; return val; }
 
    TinyGPSInteger() : valid(false), updated(false), val(0)
@@ -161,6 +165,7 @@ private:
    uint32_t val, newval;
    void commit();
    void set(const char *term);
+   void reset();
 };
 
 struct TinyGPSSpeed : TinyGPSDecimal
@@ -199,7 +204,7 @@ public:
 
    bool isUpdated() const  { return updated; }
    bool isValid() const    { return valid; }
-   uint32_t age() const    { return valid ? millis() - lastCommitTime : (uint32_t)ULONG_MAX; }
+   uint32_t age(uint32_t currentTime = millis()) const { return valid ? currentTime - lastCommitTime : (uint32_t)ULONG_MAX; }
    const char *value()     { updated = false; return buffer; }
 
 private:
@@ -220,6 +225,7 @@ class TinyGPSPlus
 {
 public:
   TinyGPSPlus();
+  void reset();
   bool encode(char c); // process one character received from GPS
   TinyGPSPlus &operator << (char c) {encode(c); return *this;}
 
